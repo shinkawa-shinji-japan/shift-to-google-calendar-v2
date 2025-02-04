@@ -29,7 +29,7 @@ const EVENT_COLORS = [
   { id: "6", name: "タンジェリン", color: "#F4511E" },
   { id: "7", name: "ピーコック", color: "#039BE5" },
   { id: "8", name: "グラファイト", color: "#616161" },
-  { id: "9", name: "ブルーベリー", color: "#3F51B5" }
+  { id: "9", name: "ブルーベリー", color: "#3F51B5" },
 ];
 
 type TimeSelectFormProps = {
@@ -45,25 +45,26 @@ export default function TimeSelectForm({
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [isLoadingCalendars, setIsLoadingCalendars] = useState(false);
 
-  const { register, handleSubmit, watch, setValue } = useForm<TimeSelectFormData>({
-    defaultValues: {
-      startTime: "10:00",
-      endTime: "17:00",
-      title: "シフト",
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      colorId: "10", // バジル色をデフォルトに設定
-      calendarId: "", // 初期値を空文字列に設定
-    },
-  });
+  const { register, handleSubmit, watch, setValue } =
+    useForm<TimeSelectFormData>({
+      defaultValues: {
+        startTime: "10:00",
+        endTime: "17:00",
+        title: "シフト",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        colorId: "10", // バジル色をデフォルトに設定
+        calendarId: "", // 初期値を空文字列に設定
+      },
+    });
 
   useEffect(() => {
     const fetchCalendars = async () => {
       if (!session?.accessToken) return;
-      
+
       try {
         setIsLoadingCalendars(true);
-        const response = await fetch('/api/calendar/list');
-        if (!response.ok) throw new Error('Failed to fetch calendars');
+        const response = await fetch("/api/calendar/list");
+        if (!response.ok) throw new Error("Failed to fetch calendars");
         const data = await response.json();
         setCalendars(data);
         // カレンダーリストが取得できたら、最初のカレンダーをデフォルト値として設定
@@ -71,7 +72,7 @@ export default function TimeSelectForm({
           setValue("calendarId", data[0].id);
         }
       } catch (error) {
-        console.error('Error fetching calendars:', error);
+        console.error("Error fetching calendars:", error);
       } finally {
         setIsLoadingCalendars(false);
       }
@@ -87,7 +88,10 @@ export default function TimeSelectForm({
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 w-full bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-200"
+    >
       <div className="relative">
         <label
           htmlFor="calendarId"
@@ -98,7 +102,7 @@ export default function TimeSelectForm({
         <select
           id="calendarId"
           {...register("calendarId")}
-          className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
+          className="mt-1 block w-full h-16 rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg transition-colors"
           disabled={isLoadingCalendars}
         >
           {isLoadingCalendars ? (
@@ -125,7 +129,7 @@ export default function TimeSelectForm({
           <select
             id="colorId"
             {...register("colorId")}
-            className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors pl-9"
+            className="mt-1 block w-full h-16 rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg transition-colors pl-9"
           >
             {EVENT_COLORS.map((color) => (
               <option key={color.id} value={color.id}>
@@ -133,12 +137,12 @@ export default function TimeSelectForm({
               </option>
             ))}
           </select>
-          <div 
+          <div
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-            style={{ 
-              backgroundColor: EVENT_COLORS.find(
-                color => color.id === watch("colorId")
-              )?.color || EVENT_COLORS[0].color 
+            style={{
+              backgroundColor:
+                EVENT_COLORS.find((color) => color.id === watch("colorId"))
+                  ?.color || EVENT_COLORS[0].color,
             }}
           />
         </div>
@@ -151,12 +155,11 @@ export default function TimeSelectForm({
         >
           予定タイトル
         </label>
-        <input
-          type="text"
+        <textarea
           id="title"
           {...register("title")}
-          className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
-          placeholder="予定のタイトルを入力"
+          className="mt-1 block w-full h-16 rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg transition-colors p-3"
+          placeholder="シフトの予定タイトルを入力してください"
         />
       </div>
 
@@ -171,7 +174,7 @@ export default function TimeSelectForm({
           <select
             id="startTime"
             {...register("startTime")}
-            className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
+            className="mt-1 block w-full h-16 rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg transition-colors"
           >
             {timeOptions.map((time) => (
               <option key={time} value={time}>
@@ -191,7 +194,7 @@ export default function TimeSelectForm({
           <select
             id="endTime"
             {...register("endTime")}
-            className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors"
+            className="mt-1 block w-full h-16 rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg transition-colors"
           >
             {timeOptions.map((time) => (
               <option key={time} value={time}>
@@ -202,49 +205,6 @@ export default function TimeSelectForm({
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting || isLoadingCalendars || calendars.length === 0}
-        className="mt-8 w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-lg font-semibold py-4 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-md"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-          />
-        </svg>
-        {isSubmitting ? (
-          <span className="flex items-center gap-2">
-            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            登録中...
-          </span>
-        ) : (
-          "Googleカレンダーに登録"
-        )}
-      </button>
     </form>
   );
 }

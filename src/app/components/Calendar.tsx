@@ -71,14 +71,23 @@ export default function Calendar({ selectedDates, onDateSelect }: CalendarProps)
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
       const isSelected = isDateSelected(date);
+      const dayOfWeek = new Date(date).getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
       days.push(
         <button
           key={i}
           onClick={() => handleDateClick(date)}
-          className={`p-2 w-full aspect-square flex items-center justify-center rounded-full transition-colors
-            ${isSelected ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'}
-            ${date.getTime() < new Date().setHours(0, 0, 0, 0) ? 'text-gray-400' : ''}
+          className={`
+            p-2 w-full aspect-square flex items-center justify-center rounded-lg text-lg font-medium
+            transition-all duration-200 transform hover:scale-105
+            ${isSelected 
+              ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-lg' 
+              : isWeekend
+                ? 'hover:bg-blue-50 text-blue-600'
+                : 'hover:bg-gray-50 text-gray-700'
+            }
+            ${dayOfWeek === 0 ? 'text-red-500' : dayOfWeek === 6 ? 'text-blue-500' : ''}
           `}
         >
           {i}
@@ -95,28 +104,37 @@ export default function Calendar({ selectedDates, onDateSelect }: CalendarProps)
   ];
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="flex items-center justify-between mb-4">
+    <div className="w-full bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-200">
+      <div className="flex items-center justify-between mb-6">
         <button
           onClick={handlePrevMonth}
-          className="p-2 hover:bg-gray-100 rounded-full"
+          className="p-3 hover:bg-gray-100 rounded-full text-gray-600 hover:text-gray-800 transition-colors"
         >
-          ←
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-xl font-bold text-gray-800">
           {currentDate.getFullYear()}年 {monthNames[currentDate.getMonth()]}
         </h2>
         <button
           onClick={handleNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-full"
+          className="p-3 hover:bg-gray-100 rounded-full text-gray-600 hover:text-gray-800 transition-colors"
         >
-          →
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
-        {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
-          <div key={day} className="p-2 text-center font-medium">
+      <div className="grid grid-cols-7 gap-2">
+        {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
+          <div 
+            key={day} 
+            className={`p-2 text-center font-bold text-sm ${
+              index === 0 ? 'text-red-500' : index === 6 ? 'text-blue-500' : 'text-gray-600'
+            }`}
+          >
             {day}
           </div>
         ))}

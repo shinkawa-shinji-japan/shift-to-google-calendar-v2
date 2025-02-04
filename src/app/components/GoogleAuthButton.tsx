@@ -8,7 +8,7 @@ export default function GoogleAuthButton() {
     return (
       <button
         onClick={() => signOut()}
-        className="flex items-center justify-center gap-3 px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm font-medium"
+        className="flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -24,14 +24,14 @@ export default function GoogleAuthButton() {
   }
 
   return (
-      <button
-        onClick={() => signIn('google')}
-        className="flex items-center justify-center gap-3 px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm font-medium"
-      >
+    <button
+      onClick={() => signIn('google')}
+      className="flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-50 to-white text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 shadow-md font-medium group"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 48 48"
-        className="w-5 h-5"
+        className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
       >
         <path
           fill="#FFC107"
@@ -50,7 +50,9 @@ export default function GoogleAuthButton() {
           d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
         />
       </svg>
-      Googleでログイン
+      <span className="transition-transform duration-200 group-hover:scale-105">
+        Googleでログイン
+      </span>
     </button>
   );
 }
