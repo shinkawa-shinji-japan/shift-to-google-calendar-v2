@@ -40,21 +40,22 @@ export async function POST(request: Request) {
       const [hours, minutes] = startTime.split(':');
       const [endHours, endMinutes] = endTime.split(':');
       
-      // 日付文字列をタイムゾーンを考慮して解析
-      const startDateTime = new Date(date);
-      startDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      
-      const endDateTime = new Date(date);
-      endDateTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
+      let startDateTime = new Date(date);
+      let endDateTime = new Date(date);
 
-      // タイムゾーンを考慮したISOString形式に変換
-      const startISO = new Date(
-        startDateTime.getTime() - (startDateTime.getTimezoneOffset() * 60000)
-      ).toISOString();
-      
-      const endISO = new Date(
-        endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)
-      ).toISOString();
+      // ファミリーカレンダー(UTCタイムゾーン固定)の場合は、日本時間からUTCに変換
+      if (calendarId.includes('family')) {
+        // 日本時間の時刻をUTCとして設定(-9時間)
+        startDateTime.setUTCHours(parseInt(hours) - 9, parseInt(minutes), 0, 0);
+        endDateTime.setUTCHours(parseInt(endHours) - 9, parseInt(endMinutes), 0, 0);
+      } else {
+        // 他のカレンダーの場合は通常通り
+        startDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        endDateTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
+      }
+
+      const startISO = startDateTime.toISOString();
+      const endISO = endDateTime.toISOString();
 
       const event = {
         summary: title,
