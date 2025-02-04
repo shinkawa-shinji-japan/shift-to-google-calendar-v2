@@ -45,13 +45,14 @@ export default function TimeSelectForm({
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [isLoadingCalendars, setIsLoadingCalendars] = useState(false);
 
-  const { register, handleSubmit, watch } = useForm<TimeSelectFormData>({
+  const { register, handleSubmit, watch, setValue } = useForm<TimeSelectFormData>({
     defaultValues: {
       startTime: "10:00",
       endTime: "17:00",
       title: "シフト",
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       colorId: "10", // バジル色をデフォルトに設定
+      calendarId: "", // 初期値を空文字列に設定
     },
   });
 
@@ -65,6 +66,10 @@ export default function TimeSelectForm({
         if (!response.ok) throw new Error('Failed to fetch calendars');
         const data = await response.json();
         setCalendars(data);
+        // カレンダーリストが取得できたら、最初のカレンダーをデフォルト値として設定
+        if (data.length > 0) {
+          setValue("calendarId", data[0].id);
+        }
       } catch (error) {
         console.error('Error fetching calendars:', error);
       } finally {
@@ -199,7 +204,7 @@ export default function TimeSelectForm({
 
       <button
         type="submit"
-        disabled={isSubmitting || isLoadingCalendars}
+        disabled={isSubmitting || isLoadingCalendars || calendars.length === 0}
         className="mt-8 w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-lg font-semibold py-4 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-md"
       >
         <svg
